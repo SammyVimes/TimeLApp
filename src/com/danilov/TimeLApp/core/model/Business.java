@@ -10,6 +10,7 @@ public class Business {
     private long id;
     private Date creationDate;
     private int businessTypeId;
+    private int hoursSpent;
 
     public int getBusinessTypeId() {
         return businessTypeId;
@@ -31,4 +32,11 @@ public class Business {
         return id;
     }
 
+    public int getHoursSpent() {
+        return hoursSpent;
+    }
+
+    public void setHoursSpent(final int hoursSpent) {
+        this.hoursSpent = hoursSpent;
+    }
 }
