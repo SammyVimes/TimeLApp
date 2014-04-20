@@ -7,6 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.danilov.TimeLApp.R;
+import com.danilov.TimeLApp.core.model.Business;
+import com.danilov.TimeLApp.core.model.BusinessType;
+import com.danilov.TimeLApp.core.persistence.BusinessDBHelper;
+
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Semyon Danilov on 18.04.2014.
@@ -15,6 +21,9 @@ public class ShowTimeFragment extends Fragment {
 
     public static String YEAR = "YEAR";
     public static String MONTH = "MONTH";
+
+    private int year;
+    private int month;
 
     private TextView hoursQuantity = null;
 
@@ -30,6 +39,9 @@ public class ShowTimeFragment extends Fragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle aruments = getArguments();
+        this.year = aruments.getInt(YEAR);
+        this.month = aruments.getInt(MONTH);
     }
 
     @Override
@@ -45,4 +57,24 @@ public class ShowTimeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        Calendar thisMonth = Calendar.getInstance();
+        thisMonth.set(Calendar.YEAR, year);
+        thisMonth.set(Calendar.MONTH, month);
+        thisMonth.set(Calendar.DAY_OF_MONTH, 0);
+        thisMonth.set(Calendar.HOUR_OF_DAY, 0);
+        thisMonth.set(Calendar.MINUTE, 0);
+        thisMonth.set(Calendar.SECOND, 0);
+        thisMonth.set(Calendar.MILLISECOND, 0);
+        BusinessDBHelper businessDBHelper = new BusinessDBHelper(getActivity());
+        List<BusinessType> businessTypeList = businessDBHelper.getBusinessTypeList();
+        List<Business> businesses = businessDBHelper.getMonthBusiness(thisMonth, businessTypeList.get(0));
+        long timeSpent = 0;
+        for (Business business : businesses) {
+            timeSpent += business.getHoursSpent();
+        }
+        hoursQuantity.setText(String.valueOf(timeSpent));
+        super.onActivityCreated(savedInstanceState);
+    }
 }
