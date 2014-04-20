@@ -12,11 +12,20 @@ public class BusinessType {
         return id;
     }
 
+    public void setId(final long id) {
+        this.id = id;
+    }
+
     public String getBusinessType() {
         return businessType;
     }
 
     public void setBusinessType(final String businessType) {
         this.businessType = businessType;
+    }
+
+    @Override
+    public String toString() {
+        return businessType;
     }
 }

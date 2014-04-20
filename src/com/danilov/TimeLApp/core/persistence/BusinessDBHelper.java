@@ -89,6 +89,18 @@ public class BusinessDBHelper extends SQLiteOpenHelper {
         return business_id;
     }
 
+    public long createBusinessType(final BusinessType businessType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (db == null) {
+            throw new RuntimeException("Creating business failed");
+        }
+        ContentValues values = new ContentValues();
+        values.put(KEY_BUSINESS_TYPE, businessType.getBusinessType());
+        long businessTypeId = db.insert(TABLE_BUSINESS_TYPE, null, values);
+        db.close();
+        return businessTypeId;
+    }
+
     public void updateBusiness(final Business business) {
         SQLiteDatabase db = this.getWritableDatabase();
         if (db == null) {
@@ -121,7 +133,7 @@ public class BusinessDBHelper extends SQLiteOpenHelper {
         Business business = null;
         if (c.moveToFirst()) {
             business = new Business();
-            business.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+            business.setId(c.getLong((c.getColumnIndex(KEY_ID))));
             business.setBusinessTypeId(c.getInt(c.getColumnIndex(KEY_BUSINESS_TYPE_ID)));
             business.setHoursSpent(c.getInt(c.getColumnIndex(KEY_HOURS_SPENT)));
             business.setCreationDate(new Date(c.getLong(c.getColumnIndex(KEY_CREATION_DATE))));
@@ -149,7 +161,7 @@ public class BusinessDBHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Business business = new Business();
-                business.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                business.setId(c.getLong((c.getColumnIndex(KEY_ID))));
                 business.setBusinessTypeId(c.getInt(c.getColumnIndex(KEY_BUSINESS_TYPE_ID)));
                 business.setHoursSpent(c.getInt(c.getColumnIndex(KEY_HOURS_SPENT)));
                 business.setCreationDate(new Date(c.getLong(c.getColumnIndex(KEY_CREATION_DATE))));
@@ -159,6 +171,28 @@ public class BusinessDBHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         return businessMonth;
+    }
+
+    public List<BusinessType> getBusinessTypeList() {
+        List<BusinessType> businessTypeList = new LinkedList<BusinessType>();
+        String selectQuery = "SELECT  * FROM " + TABLE_BUSINESS_TYPE;
+        Log.e(LOG, selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            throw new RuntimeException("Retrieving business failed");
+        }
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                BusinessType businessType = new BusinessType();
+                businessType.setId(c.getLong((c.getColumnIndex(KEY_ID))));
+                businessType.setBusinessType(c.getString(c.getColumnIndex(KEY_BUSINESS_TYPE)));
+
+                // adding to tags list
+                businessTypeList.add(businessType);
+            } while (c.moveToNext());
+        }
+        return businessTypeList;
     }
 
 }

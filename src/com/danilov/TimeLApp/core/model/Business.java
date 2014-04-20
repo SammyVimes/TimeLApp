@@ -9,14 +9,14 @@ public class Business {
 
     private long id;
     private Date creationDate;
-    private int businessTypeId;
-    private int hoursSpent;
+    private long businessTypeId;
+    private int hoursSpent = 0;
 
-    public int getBusinessTypeId() {
+    public long getBusinessTypeId() {
         return businessTypeId;
     }
 
-    public void setBusinessTypeId(final int businessTypeId) {
+    public void setBusinessTypeId(final long businessTypeId) {
         this.businessTypeId = businessTypeId;
     }
 
