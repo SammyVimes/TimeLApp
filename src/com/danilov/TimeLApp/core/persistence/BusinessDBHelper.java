@@ -2,12 +2,17 @@ package com.danilov.TimeLApp.core.persistence;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import com.danilov.TimeLApp.core.model.Business;
 import com.danilov.TimeLApp.core.model.BusinessType;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Semyon Danilov on 19.04.2014.
@@ -97,9 +102,63 @@ public class BusinessDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Business getBusiness(final Date day, final BusinessType businessType) {
+    public Business getDayBusiness(final Calendar day, final BusinessType businessType) {
+        Calendar nextDay = Calendar.getInstance();
+        nextDay.setTime(day.getTime());
+        nextDay.add(Calendar.DAY_OF_YEAR, 1);
+        String selectQuery = "SELECT  * FROM " + TABLE_BUSINESS + " WHERE "
+                + KEY_BUSINESS_TYPE_ID + " = " + businessType.getId() + " and " +
+                KEY_CREATION_DATE + " >= " + day.getTimeInMillis() + " and "
+                + KEY_CREATION_DATE + " <= " + nextDay.getTimeInMillis();
+        Log.e(LOG, selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            throw new RuntimeException("Retrieving business failed");
+        }
+        Cursor c = db.rawQuery(selectQuery, null);
 
-        return null;
+        // looping through all rows and adding to list
+        Business business = null;
+        if (c.moveToFirst()) {
+            business = new Business();
+            business.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+            business.setBusinessTypeId(c.getInt(c.getColumnIndex(KEY_BUSINESS_TYPE_ID)));
+            business.setHoursSpent(c.getInt(c.getColumnIndex(KEY_HOURS_SPENT)));
+            business.setCreationDate(new Date(c.getLong(c.getColumnIndex(KEY_CREATION_DATE))));
+        }
+        return business;
+    }
+
+    public List<Business> getMonthBusiness(final Calendar month, final BusinessType businessType) {
+        List<Business> businessMonth = new LinkedList<Business>();
+        Calendar nextMonth = Calendar.getInstance();
+        nextMonth.setTime(month.getTime());
+        nextMonth.add(Calendar.MONTH, 1);
+        String selectQuery = "SELECT  * FROM " + TABLE_BUSINESS + " WHERE "
+                + KEY_BUSINESS_TYPE_ID + " = " + businessType.getId() + " and " +
+                KEY_CREATION_DATE + " >= " + month.getTimeInMillis() + " and "
+                + KEY_CREATION_DATE + " <= " + nextMonth.getTimeInMillis();
+        Log.e(LOG, selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            throw new RuntimeException("Retrieving business failed");
+        }
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Business business = new Business();
+                business.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                business.setBusinessTypeId(c.getInt(c.getColumnIndex(KEY_BUSINESS_TYPE_ID)));
+                business.setHoursSpent(c.getInt(c.getColumnIndex(KEY_HOURS_SPENT)));
+                business.setCreationDate(new Date(c.getLong(c.getColumnIndex(KEY_CREATION_DATE))));
+
+                // adding to tags list
+                businessMonth.add(business);
+            } while (c.moveToNext());
+        }
+        return businessMonth;
     }
 
 }

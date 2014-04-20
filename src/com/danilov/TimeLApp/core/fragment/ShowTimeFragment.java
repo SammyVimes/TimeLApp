@@ -1,4 +1,4 @@
-package com.danilov.TimeLApp.core.fargment;
+package com.danilov.TimeLApp.core.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

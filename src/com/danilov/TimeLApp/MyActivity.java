@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.danilov.TimeLApp.core.fargment.ShowTimeFragment;
+import com.danilov.TimeLApp.core.fragment.MainFragment;
+import com.danilov.TimeLApp.core.fragment.ShowTimeFragment;
 import com.danilov.TimeLApp.core.util.Util;
 
 public class MyActivity extends ActionBarActivity {
@@ -50,6 +52,17 @@ public class MyActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+        showMainFragment();
+    }
+
+    private void showMainFragment() {
+        MainFragment fragment = MainFragment.newInstance();
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+        getSupportActionBar().setHomeButtonEnabled(false);
     }
 
     private class DrawerListItemClickListener implements AdapterView.OnItemClickListener {
@@ -60,17 +73,19 @@ public class MyActivity extends ActionBarActivity {
                                 final int position,
                                 final long id) {
             mDrawerList.setItemChecked(position, true);
-            selectFragment(position);
+            selectMonthFragment(position);
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
 
-    private void selectFragment(final int month) {
+    private void selectMonthFragment(final int month) {
         ShowTimeFragment fragment = ShowTimeFragment.newInstance(2014, month);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
     }
 
     @Override
@@ -84,6 +99,17 @@ public class MyActivity extends ActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                showMainFragment();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -28,6 +28,10 @@ public class Business {
         this.creationDate = creationDate;
     }
 
+    public void setId(final long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
