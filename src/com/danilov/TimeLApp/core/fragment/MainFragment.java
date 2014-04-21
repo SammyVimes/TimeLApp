@@ -38,9 +38,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.main_fragment_layot, container, false);
+        View view = inflater.inflate(R.layout.main_fragment_layout, container, false);
         if (view == null) {
-            throw new RuntimeException("Layout::main_fragment_layot not found. Can't create fragment");
+            throw new RuntimeException("Layout::main_fragment_layout not found. Can't create fragment");
         }
         return view;
     }
@@ -103,15 +103,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         BusinessDBHelper helper = new BusinessDBHelper(getActivity());
         long id = helper.createBusinessType(businessType);
         businessType.setId(id);
+        loadTypes();
     }
 
     private void submit() {
         BusinessType businessType = (BusinessType) businessTypeSpinner.getSelectedItem();
-        Calendar day = Calendar.getInstance();
-        day.set(Calendar.HOUR_OF_DAY, 0);
-        day.set(Calendar.MINUTE, 0);
-        day.set(Calendar.SECOND, 0);
-        day.set(Calendar.MILLISECOND, 0);
+        if (businessType == null) {
+            return;
+        }
+        Calendar day = Util.getClearDay();
         BusinessDBHelper businessDBHelper = new BusinessDBHelper(getActivity());
         Business business = businessDBHelper.getDayBusiness(day, businessType);
         if (business == null) {

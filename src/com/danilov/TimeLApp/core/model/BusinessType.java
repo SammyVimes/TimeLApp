@@ -28,4 +28,17 @@ public class BusinessType {
     public String toString() {
         return businessType;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof BusinessType)) {
+            return false;
+        }
+        return id == ((BusinessType) o).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) id;
+    }
 }

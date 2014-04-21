@@ -22,6 +22,8 @@ public class MyActivity extends ActionBarActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private boolean isMainFragment = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +64,7 @@ public class MyActivity extends ActionBarActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
-        getSupportActionBar().setHomeButtonEnabled(false);
+        isMainFragment = true;
     }
 
     private class DrawerListItemClickListener implements AdapterView.OnItemClickListener {
@@ -84,8 +86,8 @@ public class MyActivity extends ActionBarActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
-        getSupportActionBar().setHomeButtonEnabled(true);
         mDrawerToggle.setDrawerIndicatorEnabled(false);
+        isMainFragment = false;
     }
 
     @Override
@@ -106,7 +108,16 @@ public class MyActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                showMainFragment();
+                if (isMainFragment) {
+                    if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                        mDrawerLayout.closeDrawer(mDrawerList);
+                    } else {
+                        mDrawerLayout.openDrawer(mDrawerList);
+                    }
+                    mDrawerToggle.syncState();
+                } else {
+                    showMainFragment();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

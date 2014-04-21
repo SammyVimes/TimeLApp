@@ -3,4 +3,8 @@
     <dimen name="hour_quantity_size">140sp</dimen>
     <dimen name="hours_word">30sp</dimen>
     <dimen name="hours_word_margin">25sp</dimen>
+
+    <dimen name="slidingmenu_offset">120dp</dimen>
+    <dimen name="list_padding">10dp</dimen>
+    <dimen name="shadow_width">15dp</dimen>
 </resources>

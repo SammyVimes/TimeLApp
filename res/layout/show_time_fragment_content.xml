@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFF">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="@dimen/hour_quantity_size"
+            android:id="@+id/hours_quantity"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hours_word"
+            android:textSize="@dimen/hours_word"
+            android:layout_marginBottom="@dimen/hours_word_margin"
+            android:layout_alignBottom="@+id/hours_quantity"
+            android:layout_toRightOf="@+id/hours_quantity"/>
+
+</RelativeLayout>
